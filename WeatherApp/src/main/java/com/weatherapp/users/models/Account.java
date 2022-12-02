@@ -19,6 +19,17 @@ public abstract class Account {
   private String email;
   private String creationDate;
 
+  public Account(String username, String password, String email) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
+
+  public Account() {
+  }
+
+  public abstract RoleEnum getRole();
+
   public Long getId() {
     return id;
   }
@@ -57,9 +68,5 @@ public abstract class Account {
 
   public void setCreationDate(String creationDate) {
     this.creationDate = creationDate;
-  }
-
-  public String getRolesString() {
-    return "";
   }
 }

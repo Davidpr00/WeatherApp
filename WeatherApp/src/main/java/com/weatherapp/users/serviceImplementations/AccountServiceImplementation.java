@@ -13,17 +13,17 @@ import com.weatherapp.common.exceptions.UsernameMissingException;
 import com.weatherapp.common.exceptions.UsernameTakenException;
 import com.weatherapp.users.models.Account;
 import com.weatherapp.users.repositories.AccountRepository;
-import com.weatherapp.users.services.UserService;
+import com.weatherapp.users.services.AccountService;
 import org.springframework.stereotype.Service;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 @Service
-public class UserServiceImplementation implements UserService {
+public class AccountServiceImplementation implements AccountService {
 
   private final AccountRepository accountRepository;
 
-  public UserServiceImplementation(
+  public AccountServiceImplementation(
       AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
@@ -62,8 +62,10 @@ public class UserServiceImplementation implements UserService {
     }
 
       Account account = new Account(registerRequestDto.getUsername(), registerRequestDto.getEmail(), registerRequestDto.getPassword());
+      sendVerificationEmail(account);
       accountRepository.save(account);
-      sendEmail(account);
+      ;
+      //TODO: SEND EMAILS, IMPLEMENT EMAIL SENDER
     }
 
   @Override

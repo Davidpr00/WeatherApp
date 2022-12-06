@@ -5,7 +5,7 @@ import com.weatherapp.common.dtos.RegisterRequestDto;
 import com.weatherapp.common.dtos.UserDto;
 import com.weatherapp.users.models.Account;
 
-public interface UserService {
+public interface AccountService {
 
   UserDto loginUser(LoginRequestDto loginRequestDto);
 

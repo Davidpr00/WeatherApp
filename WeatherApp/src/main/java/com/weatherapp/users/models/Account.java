@@ -7,8 +7,8 @@ import jakarta.persistence.MappedSuperclass;
 import java.util.Date;
 
 
-@MappedSuperclass
-public abstract class Account {
+
+public class Account {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,7 @@ public abstract class Account {
   private String password;
   private String email;
   private String creationDate;
+  private Enum<RoleEnum> role;
 
   public Account(String username, String password, String email) {
     this.username = username;
@@ -27,8 +28,6 @@ public abstract class Account {
 
   public Account() {
   }
-
-  public abstract RoleEnum getRole();
 
   public Long getId() {
     return id;
@@ -68,5 +67,13 @@ public abstract class Account {
 
   public void setCreationDate(String creationDate) {
     this.creationDate = creationDate;
+  }
+
+  public Enum<RoleEnum> getRole() {
+    return role;
+  }
+
+  public void setRole(Enum<RoleEnum> role) {
+    this.role = role;
   }
 }

@@ -12,4 +12,7 @@ public interface UserService {
   void validateAndRegister(RegisterRequestDto registerRequestDto);
 
   Account findUserById(Long id);
+
+  boolean existsAccountByUsername(String username);
+  boolean validateEmail(String email);
 }

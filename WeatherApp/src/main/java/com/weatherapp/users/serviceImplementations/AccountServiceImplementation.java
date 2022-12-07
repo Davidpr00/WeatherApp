@@ -1,8 +1,9 @@
 package com.weatherapp.users.serviceImplementations;
 
+import com.weatherapp.common.dtos.AccountResponseDto;
 import com.weatherapp.common.dtos.LoginRequestDto;
 import com.weatherapp.common.dtos.RegisterRequestDto;
-import com.weatherapp.common.dtos.UserDto;
+import com.weatherapp.common.dtos.AccountDto;
 import com.weatherapp.common.exceptions.EmailIsMissingException;
 import com.weatherapp.common.exceptions.InvalidEmailException;
 import com.weatherapp.common.exceptions.InvalidLoginCredentialsException;
@@ -14,6 +15,9 @@ import com.weatherapp.common.exceptions.UsernameTakenException;
 import com.weatherapp.users.models.Account;
 import com.weatherapp.users.repositories.AccountRepository;
 import com.weatherapp.users.services.AccountService;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.security.auth.login.AccountNotFoundException;
 import org.springframework.stereotype.Service;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -29,7 +33,7 @@ public class AccountServiceImplementation implements AccountService {
   }
 
   @Override
-  public UserDto loginUser(LoginRequestDto loginRequestDto) {
+  public AccountDto loginUser(LoginRequestDto loginRequestDto) {
     if (loginRequestDto.getEmail() == null) {
       throw new EmailIsMissingException();
     } else if (loginRequestDto.getPassword() == null) {
@@ -38,8 +42,8 @@ public class AccountServiceImplementation implements AccountService {
         loginRequestDto.getEmail()).getPassword().equals(loginRequestDto.getPassword())) {
       throw new InvalidLoginCredentialsException();
     }
-    UserDto userDto = new UserDto(accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getId(),accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getUsername());
-    return userDto;
+    AccountDto accountDto = new AccountDto(accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getId(),accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getUsername());
+    return accountDto;
   }
 
   @Override
@@ -89,5 +93,39 @@ public class AccountServiceImplementation implements AccountService {
       System.out.println("Email is not valid" + addressException.getMessage());
     }
     return isValid;
+  }
+
+  @Override
+  public void deleteAccountById(long id) throws AccountNotFoundException {
+    if (accountRepository.existsById(id)) {
+      accountRepository.deleteById(id);
+    } else {
+      throw new AccountNotFoundException();
+      }
+    }
+
+  @Override
+  public List<AccountResponseDto> findAll() {
+    return accountRepository.findAll().stream()
+        .map(
+            account ->
+                new AccountResponseDto(
+                    account.getId(),
+                    account.getUsername(),
+                    account.getEmail(),
+                    account.getCreationDate(),
+                    account.getRole()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public AccountResponseDto updateAccountById(long id, RegisterRequestDto registerRequestDto) {
+    Account account = accountRepository.findAccountById(id);
+    account.setUsername(registerRequestDto.getUsername());
+    account.setEmail(registerRequestDto.getEmail());
+    account.setPassword(registerRequestDto.getPassword());
+    accountRepository.save(account);
+    return new AccountResponseDto(
+        account.getId(), account.getUsername(), account.getEmail(), account.getCreationDate(), account.getRole());
   }
 }

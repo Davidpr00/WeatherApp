@@ -1,10 +1,10 @@
 package com.weatherapp.common.dtos;
 
-public class UserDto {
+public class AccountDto {
   private Long id;
   private String username;
 
-  public UserDto(Long id, String username) {
+  public AccountDto(Long id, String username) {
     this.id = id;
     this.username = username;
   }

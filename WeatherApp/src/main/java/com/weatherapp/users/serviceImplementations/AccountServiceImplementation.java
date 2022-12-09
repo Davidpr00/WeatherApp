@@ -16,8 +16,13 @@ import com.weatherapp.users.models.Account;
 import com.weatherapp.users.repositories.AccountRepository;
 import com.weatherapp.users.services.AccountService;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.mail.internet.MimeMessage;
 import javax.security.auth.login.AccountNotFoundException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -26,10 +31,12 @@ import javax.mail.internet.InternetAddress;
 public class AccountServiceImplementation implements AccountService {
 
   private final AccountRepository accountRepository;
+  private final JavaMailSender javaMailSender;
 
   public AccountServiceImplementation(
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository, JavaMailSender javaMailSender) {
     this.accountRepository = accountRepository;
+    this.javaMailSender = javaMailSender;
   }
 
   @Override
@@ -66,11 +73,34 @@ public class AccountServiceImplementation implements AccountService {
     }
 
       Account account = new Account(registerRequestDto.getUsername(), registerRequestDto.getEmail(), registerRequestDto.getPassword());
-      sendVerificationEmail(account);
+      assignVerificationToken(account);
       accountRepository.save(account);
-      ;
-      //TODO: SEND EMAILS, IMPLEMENT EMAIL SENDER
+      sendVerificationEmail(account);
+
+
+
     }
+
+  public void sendVerificationEmail(Account account) {
+    String subject = "Verify your myEbay account! ";
+    String body = "Please, click the link below to verify your account: <br> "
+        + "http://localhost:8080/users/verify/"
+        + account.getVerificationToken();
+
+    javaMailSender.send( mimeMessage -> {
+      MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+      mimeMsgHelperObj.setTo(account.getEmail());
+      mimeMsgHelperObj.setText(body, true);
+      mimeMsgHelperObj.setSubject(subject);
+    });
+  }
+
+  @Override
+  public void assignVerificationToken(Account account) {
+    String verificationCode = UUID.randomUUID().toString();
+    account.setVerificationToken(verificationCode);
+    accountRepository.save(account);
+  }
 
   @Override
   public Account findUserById(Long id) {

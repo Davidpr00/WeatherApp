@@ -24,4 +24,7 @@ public interface AccountService {
   List<AccountResponseDto> findAll();
 
   AccountResponseDto updateAccountById(long id, RegisterRequestDto registerRequestDto);
+  void sendVerificationEmail(Account account);
+
+  void assignVerificationToken(Account account);
 }

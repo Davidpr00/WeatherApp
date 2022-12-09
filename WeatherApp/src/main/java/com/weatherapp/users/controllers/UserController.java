@@ -5,7 +5,9 @@ import com.weatherapp.common.dtos.RegisterRequestDto;
 import com.weatherapp.security.JwtUtil;
 import com.weatherapp.users.models.Account;
 import com.weatherapp.users.services.AccountService;
+import javax.security.auth.login.AccountNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +38,12 @@ public class UserController {
   public ResponseEntity register(@RequestBody RegisterRequestDto registerRequestDto) {
     accountService.validateAndRegister(registerRequestDto);
     return ResponseEntity.ok().body("ok");
+  }
+
+  @PostMapping("/verify/{verificationToken}")
+  public ResponseEntity login(@PathVariable String verificationToken)
+      throws AccountNotFoundException {
+    accountService.verifyAccount(verificationToken);
+    return ResponseEntity.ok().body("Account successfully verified.");
   }
 }

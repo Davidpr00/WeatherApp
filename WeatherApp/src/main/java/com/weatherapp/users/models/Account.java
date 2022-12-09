@@ -8,8 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MappedSuperclass;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,14 +20,15 @@ public class Account {
   private String username;
   private String password;
   private String email;
-  private String creationDate;
+  private String createdAt;
+  private String verifiedAt;
   private Enum<RoleEnum> role;
   private String verificationToken;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(
-      name = "user_city",
-      joinColumns = @JoinColumn(name = "user_id"),
+      name = "account_city",
+      joinColumns = @JoinColumn(name = "account_id"),
       inverseJoinColumns = @JoinColumn(name = "city_id"))
   private List<City> citiesList;
 
@@ -75,12 +74,12 @@ public class Account {
     this.email = email;
   }
 
-  public String getCreationDate() {
-    return creationDate;
+  public String getCreatedAt() {
+    return createdAt;
   }
 
-  public void setCreationDate(String creationDate) {
-    this.creationDate = creationDate;
+  public void setCreatedAt(String creationDate) {
+    this.createdAt = creationDate;
   }
 
   public Enum<RoleEnum> getRole() {
@@ -105,5 +104,13 @@ public class Account {
 
   public void setVerificationToken(String verificationToken) {
     this.verificationToken = verificationToken;
+  }
+
+  public String getVerifiedAt() {
+    return verifiedAt;
+  }
+
+  public void setVerifiedAt(String verifiedAt) {
+    this.verifiedAt = verifiedAt;
   }
 }

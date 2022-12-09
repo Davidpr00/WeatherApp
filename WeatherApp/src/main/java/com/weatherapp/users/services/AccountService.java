@@ -27,4 +27,6 @@ public interface AccountService {
   void sendVerificationEmail(Account account);
 
   void assignVerificationToken(Account account);
+
+  void verifyAccount(String verificationToken) throws AccountNotFoundException;
 }

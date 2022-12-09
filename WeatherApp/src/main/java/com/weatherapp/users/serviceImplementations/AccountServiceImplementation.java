@@ -1,9 +1,9 @@
 package com.weatherapp.users.serviceImplementations;
 
+import com.weatherapp.common.dtos.AccountDto;
 import com.weatherapp.common.dtos.AccountResponseDto;
 import com.weatherapp.common.dtos.LoginRequestDto;
 import com.weatherapp.common.dtos.RegisterRequestDto;
-import com.weatherapp.common.dtos.AccountDto;
 import com.weatherapp.common.exceptions.EmailIsMissingException;
 import com.weatherapp.common.exceptions.InvalidEmailException;
 import com.weatherapp.common.exceptions.InvalidLoginCredentialsException;
@@ -15,17 +15,16 @@ import com.weatherapp.common.exceptions.UsernameTakenException;
 import com.weatherapp.users.models.Account;
 import com.weatherapp.users.repositories.AccountRepository;
 import com.weatherapp.users.services.AccountService;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.mail.internet.MimeMessage;
 import javax.security.auth.login.AccountNotFoundException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 @Service
 public class AccountServiceImplementation implements AccountService {
@@ -103,6 +102,17 @@ public class AccountServiceImplementation implements AccountService {
   }
 
   @Override
+  public void verifyAccount(String verificationToken) throws AccountNotFoundException {
+    Account tobeVerified = accountRepository.findAccountByVerificationToken(verificationToken);
+    if(tobeVerified == null){
+      throw new AccountNotFoundException();
+    } else {
+      tobeVerified.setVerifiedAt(LocalDateTime.now().toString());
+      accountRepository.save(tobeVerified);
+    }
+  }
+
+  @Override
   public Account findUserById(Long id) {
     return accountRepository.findAccountById(id);
   }
@@ -143,7 +153,7 @@ public class AccountServiceImplementation implements AccountService {
                     account.getId(),
                     account.getUsername(),
                     account.getEmail(),
-                    account.getCreationDate(),
+                    account.getCreatedAt(),
                     account.getRole()))
         .collect(Collectors.toList());
   }
@@ -156,6 +166,8 @@ public class AccountServiceImplementation implements AccountService {
     account.setPassword(registerRequestDto.getPassword());
     accountRepository.save(account);
     return new AccountResponseDto(
-        account.getId(), account.getUsername(), account.getEmail(), account.getCreationDate(), account.getRole());
+        account.getId(), account.getUsername(), account.getEmail(), account.getCreatedAt(), account.getRole());
   }
+
+
 }

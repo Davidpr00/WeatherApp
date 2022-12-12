@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 public class CityController {
 
   @Value("${API_KEY}")
-  private String apikey = "f51524b64c9093b2b839dfc96f9d65f0";
+  private String apikey;
 
   @GetMapping("/{cityName}")
   ResponseEntity<OpenWeatherResponseDto> getTemperaturebyLocationCoordinates(@PathVariable String cityName) {

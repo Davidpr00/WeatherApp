@@ -18,30 +18,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
   private final AccountService accountService;
 
-
   public AccountController(AccountService accountService) {
     this.accountService = accountService;
   }
 
   @GetMapping("/")
-  public ResponseEntity index(){
+  public ResponseEntity index() {
     return ResponseEntity.ok().body(accountService.findAll());
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity show(@PathVariable long id){
+  public ResponseEntity show(@PathVariable long id) {
     return ResponseEntity.ok().body(accountService.findUserById(id));
   }
 
   @PostMapping("/")
-  public ResponseEntity store(@RequestBody RegisterRequestDto registerRequestDto){
+  public ResponseEntity store(@RequestBody RegisterRequestDto registerRequestDto) {
     accountService.validateAndRegister(registerRequestDto);
     return ResponseEntity.ok().build();
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity update(@PathVariable long id, @RequestBody RegisterRequestDto registerRequestDto){
-    return ResponseEntity.ok().body(accountService.updateAccountById(id,registerRequestDto));
+  public ResponseEntity update(
+      @PathVariable long id, @RequestBody RegisterRequestDto registerRequestDto) {
+    return ResponseEntity.ok().body(accountService.updateAccountById(id, registerRequestDto));
   }
 
   @DeleteMapping("/{id}")

@@ -1,7 +1,6 @@
 package com.weatherapp.users.models;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,19 +9,20 @@ import jakarta.persistence.ManyToMany;
 import java.util.List;
 
 @Entity
- public class City {
+public class City {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String cityName;
-    private double lat;
-    private double lon;
-    private String country;
+  private String cityName;
+  private double lat;
+  private double lon;
+  private String country;
 
-    @ManyToMany(mappedBy = "citiesList", cascade = CascadeType.ALL)
-    private List<Account> accountList;
+  @ManyToMany(mappedBy = "citiesList", cascade = CascadeType.ALL)
+  private List<Account> accountList;
+
   public City(String cityName, double lat, double lon, String country, List<Account> accountList) {
     this.cityName = cityName;
     this.lat = lat;
@@ -31,24 +31,23 @@ import java.util.List;
     this.accountList = accountList;
   }
 
-  public City() {
-    }
+  public City() {}
 
-   public Long getId() {
-      return id;
-   }
+  public Long getId() {
+    return id;
+  }
 
-   public void setId(Long id) {
-      this.id = id;
-   }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-   public String getCityName() {
-      return cityName;
-   }
+  public String getCityName() {
+    return cityName;
+  }
 
-   public void setCityName(String cityName) {
-      this.cityName = cityName;
-   }
+  public void setCityName(String cityName) {
+    this.cityName = cityName;
+  }
 
   public List<Account> getAccountList() {
     return accountList;

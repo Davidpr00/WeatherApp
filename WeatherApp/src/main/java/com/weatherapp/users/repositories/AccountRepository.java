@@ -6,10 +6,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-boolean existsAccountByEmail(String email);
-Account findAccountByEmail(String email);
-boolean existsAccountByUsername(String username);
-Account findAccountById(long id);
-Account findAccountByVerificationToken(String verificationToken);
-Account findAccountByUsername(String username);
+  boolean existsAccountByEmail(String email);
+
+  Account findAccountByEmail(String email);
+
+  boolean existsAccountByUsername(String username);
+
+  Account findAccountById(long id);
+
+  Account findAccountByVerificationToken(String verificationToken);
+
+  Account findAccountByUsername(String username);
 }

@@ -4,8 +4,7 @@ public class Weather {
 
   private String main;
 
-  public Weather() {
-  }
+  public Weather() {}
 
   public Weather(String main) {
     this.main = main;
@@ -19,4 +18,3 @@ public class Weather {
     this.main = main;
   }
 }
-

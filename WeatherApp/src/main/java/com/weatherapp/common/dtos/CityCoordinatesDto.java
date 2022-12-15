@@ -7,8 +7,7 @@ public class CityCoordinatesDto {
   private double lon;
   private String country;
 
-  public CityCoordinatesDto() {
-  }
+  public CityCoordinatesDto() {}
 
   public CityCoordinatesDto(String name, double lat, double lon, String country) {
     this.name = name;

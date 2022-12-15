@@ -9,8 +9,7 @@ public class OpenWeatherResponseDto {
     this.weather = weather;
   }
 
-  public OpenWeatherResponseDto() {
-  }
+  public OpenWeatherResponseDto() {}
 
   public Main getMain() {
     return main;

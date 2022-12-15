@@ -1,10 +1,9 @@
 package com.weatherapp.common.dtos;
 
 public class ErrorResponseDto {
-private String message;
+  private String message;
 
-  public ErrorResponseDto() {
-  }
+  public ErrorResponseDto() {}
 
   public ErrorResponseDto(String message) {
     this.message = message;

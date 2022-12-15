@@ -29,11 +29,13 @@ public class UserController {
     ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
     builder.scheme("http");
     String urlPath = builder.build().toString();
-    Account account = accountService.findUserById(accountService.loginUser(loginRequestDto).getId());
+    Account account =
+        accountService.findUserById(accountService.loginUser(loginRequestDto).getId());
     JwtUtil jwtUtil = new JwtUtil();
     final String jwt = jwtUtil.createAccess(account, urlPath);
     return ResponseEntity.status(200).body(jwt);
   }
+
   @PostMapping("/register")
   public ResponseEntity register(@RequestBody RegisterRequestDto registerRequestDto) {
     accountService.validateAndRegister(registerRequestDto);

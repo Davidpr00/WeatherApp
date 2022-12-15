@@ -1,11 +1,10 @@
 package com.weatherapp.common.dtos;
 
 public class Main {
-private int temp;
-private int humidity;
+  private int temp;
+  private int humidity;
 
-  public Main() {
-  }
+  public Main() {}
 
   public Main(int temp, int humidity) {
     this.temp = temp;

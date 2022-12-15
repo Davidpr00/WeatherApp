@@ -16,7 +16,6 @@ import com.weatherapp.common.exceptions.ShortUsernameException;
 import com.weatherapp.common.exceptions.UsernameMissingException;
 import com.weatherapp.common.exceptions.UsernameTakenException;
 import com.weatherapp.security.JwtUtil;
-import com.weatherapp.users.controllers.CityController;
 import com.weatherapp.users.models.Account;
 import com.weatherapp.users.models.City;
 import com.weatherapp.users.repositories.AccountRepository;
@@ -41,16 +40,18 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AccountServiceImplementation implements AccountService {
 
-  @Value("${API_KEY}")
-  private String apikey;
-
   private final AccountRepository accountRepository;
   private final CityRepository cityRepository;
   private final JavaMailSender javaMailSender;
   private final JwtUtil jwtUtil;
+  @Value("${API_KEY}")
+  private String apikey;
 
   public AccountServiceImplementation(
-      AccountRepository accountRepository, CityRepository cityRepository, JavaMailSender javaMailSender, JwtUtil jwtUtil) {
+      AccountRepository accountRepository,
+      CityRepository cityRepository,
+      JavaMailSender javaMailSender,
+      JwtUtil jwtUtil) {
     this.accountRepository = accountRepository;
     this.cityRepository = cityRepository;
     this.javaMailSender = javaMailSender;
@@ -63,11 +64,17 @@ public class AccountServiceImplementation implements AccountService {
       throw new EmailIsMissingException();
     } else if (loginRequestDto.getPassword() == null) {
       throw new PasswordIsMissingException();
-    } else if (!accountRepository.existsAccountByEmail(loginRequestDto.getEmail()) || !accountRepository.findAccountByEmail(
-        loginRequestDto.getEmail()).getPassword().equals(loginRequestDto.getPassword())) {
+    } else if (!accountRepository.existsAccountByEmail(loginRequestDto.getEmail())
+        || !accountRepository
+            .findAccountByEmail(loginRequestDto.getEmail())
+            .getPassword()
+            .equals(loginRequestDto.getPassword())) {
       throw new InvalidLoginCredentialsException();
     }
-    AccountDto accountDto = new AccountDto(accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getId(),accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getUsername());
+    AccountDto accountDto =
+        new AccountDto(
+            accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getId(),
+            accountRepository.findAccountByEmail(loginRequestDto.getEmail()).getUsername());
     return accountDto;
   }
 
@@ -90,27 +97,30 @@ public class AccountServiceImplementation implements AccountService {
       throw new InvalidEmailException();
     }
 
-      Account account = new Account(registerRequestDto.getUsername(), registerRequestDto.getEmail(), registerRequestDto.getPassword());
-      assignVerificationToken(account);
-      accountRepository.save(account);
-      sendVerificationEmail(account);
-
-
-
-    }
+    Account account =
+        new Account(
+            registerRequestDto.getUsername(),
+            registerRequestDto.getEmail(),
+            registerRequestDto.getPassword());
+    assignVerificationToken(account);
+    accountRepository.save(account);
+    sendVerificationEmail(account);
+  }
 
   public void sendVerificationEmail(Account account) {
     String subject = "Verify your myEbay account! ";
-    String body = "Please, click the link below to verify your account: <br> "
-        + "http://localhost:8080/users/verify/"
-        + account.getVerificationToken();
+    String body =
+        "Please, click the link below to verify your account: <br> "
+            + "http://localhost:8080/users/verify/"
+            + account.getVerificationToken();
 
-    javaMailSender.send( mimeMessage -> {
-      MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-      mimeMsgHelperObj.setTo(account.getEmail());
-      mimeMsgHelperObj.setText(body, true);
-      mimeMsgHelperObj.setSubject(subject);
-    });
+    javaMailSender.send(
+        mimeMessage -> {
+          MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+          mimeMsgHelperObj.setTo(account.getEmail());
+          mimeMsgHelperObj.setText(body, true);
+          mimeMsgHelperObj.setSubject(subject);
+        });
   }
 
   @Override
@@ -123,7 +133,7 @@ public class AccountServiceImplementation implements AccountService {
   @Override
   public void verifyAccount(String verificationToken) throws AccountNotFoundException {
     Account tobeVerified = accountRepository.findAccountByVerificationToken(verificationToken);
-    if(tobeVerified == null){
+    if (tobeVerified == null) {
       throw new AccountNotFoundException();
     } else {
       tobeVerified.setVerifiedAt(LocalDateTime.now().toString());
@@ -133,12 +143,20 @@ public class AccountServiceImplementation implements AccountService {
 
   @Override
   public void saveCityForUser(String token, ResponseEntity<CityCoordinatesDto[]> response) {
-    Account account = accountRepository.findAccountByUsername(jwtUtil.decodeToToken(token).getName());
-    CityCoordinatesDto coordinatesDto = new CityCoordinatesDto(
-        Objects.requireNonNull(response.getBody())[0].getName(),response.getBody()[0].getLat(),
-        response.getBody()[0].getLon(),response.getBody()[0].getCountry());
-    if(!cityRepository.existsCityByCityName(coordinatesDto.getName())){
-      City city = new City(coordinatesDto.getName(),coordinatesDto.getLat(),coordinatesDto.getLon(),coordinatesDto.getCountry(), new ArrayList<>());
+    Account account =
+        accountRepository.findAccountByUsername(jwtUtil.decodeToToken(token).getName());
+    CityCoordinatesDto coordinatesDto =
+        new CityCoordinatesDto(
+            Objects.requireNonNull(response.getBody())[0].getName(), response.getBody()[0].getLat(),
+            response.getBody()[0].getLon(), response.getBody()[0].getCountry());
+    if (!cityRepository.existsCityByCityName(coordinatesDto.getName())) {
+      City city =
+          new City(
+              coordinatesDto.getName(),
+              coordinatesDto.getLat(),
+              coordinatesDto.getLon(),
+              coordinatesDto.getCountry(),
+              new ArrayList<>());
       city.getAccountList().add(account);
       cityRepository.save(city);
       account.getCitiesList().add(city);
@@ -173,13 +191,13 @@ public class AccountServiceImplementation implements AccountService {
               OpenWeatherResponseDto.class);
       return response.getBody();
     }
-    }
+  }
 
-  public City returnCityFromUser(List<City> cities, String cityName){
+  public City returnCityFromUser(List<City> cities, String cityName) {
     for (City city : cities) {
-        if(Objects.equals(city.getCityName(), cityName)){
-          return city;
-        }
+      if (Objects.equals(city.getCityName(), cityName)) {
+        return city;
+      }
     }
     return null;
   }
@@ -213,8 +231,8 @@ public class AccountServiceImplementation implements AccountService {
       accountRepository.deleteById(id);
     } else {
       throw new AccountNotFoundException();
-      }
     }
+  }
 
   @Override
   public List<AccountResponseDto> findAll() {
@@ -238,8 +256,10 @@ public class AccountServiceImplementation implements AccountService {
     account.setPassword(registerRequestDto.getPassword());
     accountRepository.save(account);
     return new AccountResponseDto(
-        account.getId(), account.getUsername(), account.getEmail(), account.getCreatedAt(), account.getRole());
+        account.getId(),
+        account.getUsername(),
+        account.getEmail(),
+        account.getCreatedAt(),
+        account.getRole());
   }
-
-
 }

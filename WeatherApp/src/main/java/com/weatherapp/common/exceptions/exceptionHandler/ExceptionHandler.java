@@ -12,6 +12,7 @@ import com.weatherapp.common.exceptions.ShortUsernameException;
 import com.weatherapp.common.exceptions.UsernameMissingException;
 import com.weatherapp.common.exceptions.UsernameTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,7 +37,8 @@ public class ExceptionHandler {
     return new ErrorResponseDto(environment.getProperty("config.errors.invalid_email"));
   }
 
-  @org.springframework.web.bind.annotation.ExceptionHandler(value = InvalidLoginCredentialsException.class)
+  @org.springframework.web.bind.annotation.ExceptionHandler(
+      value = InvalidLoginCredentialsException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponseDto handleInvalidLoginCredentialsException() {
     return new ErrorResponseDto(environment.getProperty("config.errors.invalid_login_credentials"));
@@ -48,7 +50,8 @@ public class ExceptionHandler {
     return new ErrorResponseDto(environment.getProperty("config.errors.invalid_token"));
   }
 
-  @org.springframework.web.bind.annotation.ExceptionHandler(value = PasswordIsMissingException.class)
+  @org.springframework.web.bind.annotation.ExceptionHandler(
+      value = PasswordIsMissingException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponseDto handlePasswordIsMissingException() {
     return new ErrorResponseDto(environment.getProperty("config.errors.password_is_missing"));
@@ -83,5 +86,4 @@ public class ExceptionHandler {
   public ErrorResponseDto handleCityNotFoundException() {
     return new ErrorResponseDto(environment.getProperty("config.errors.city_not_found"));
   }
-
 }

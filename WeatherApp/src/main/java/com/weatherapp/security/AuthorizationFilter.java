@@ -47,9 +47,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                   new UsernamePasswordAuthenticationToken(
                       decodedJwt.getSubject(), null, authorities));
           if (decodedJwt.getClaim("role").toString().contains("USER")
-              && !request.getServletPath().contains("USER")
+                  && !request.getServletPath().contains("USER")
               || decodedJwt.getClaim("role").toString().contains("ADMIN")
-              && !request.getServletPath().contains("ADMIN")) {
+                  && !request.getServletPath().contains("ADMIN")) {
             throw new InvalidTokenException();
           }
           filterChain.doFilter(request, response);

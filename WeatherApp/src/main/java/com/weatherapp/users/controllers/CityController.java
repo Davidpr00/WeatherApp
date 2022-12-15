@@ -17,29 +17,32 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/city")
 public class CityController {
 
+  private final AccountService accountService;
   @Value("${API_KEY}")
   private String apikey;
-
-  private final AccountService accountService;
 
   public CityController(AccountService accountService) {
     this.accountService = accountService;
   }
 
   @GetMapping("/{cityName}")
-  ResponseEntity<OpenWeatherResponseDto> getTemperaturebyLocationCoordinates(@RequestHeader String token, @PathVariable String cityName) {
-    return ResponseEntity.ok()
-        .body(
-            accountService.showOpenWeatherResponseDto(token, cityName));
+  ResponseEntity<OpenWeatherResponseDto> getTemperaturebyLocationCoordinates(
+      @RequestHeader String token, @PathVariable String cityName) {
+    return ResponseEntity.ok().body(accountService.showOpenWeatherResponseDto(token, cityName));
   }
+
   @GetMapping("/save/{cityName}")
-  ResponseEntity<CityCoordinatesDto> getCoordinatesFromCityName(@RequestHeader String token, @PathVariable String cityName) {
+  ResponseEntity<CityCoordinatesDto> getCoordinatesFromCityName(
+      @RequestHeader String token, @PathVariable String cityName) {
     RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<CityCoordinatesDto[]> response = restTemplate
-        .getForEntity("http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apikey, CityCoordinatesDto[].class);
+    ResponseEntity<CityCoordinatesDto[]> response =
+        restTemplate.getForEntity(
+            "http://api.openweathermap.org/geo/1.0/direct?q="
+                + cityName
+                + "&limit=1&appid="
+                + apikey,
+            CityCoordinatesDto[].class);
     accountService.saveCityForUser(token, response);
-    return ResponseEntity.ok()
-        .body(
-            Objects.requireNonNull(response.getBody())[0]);
+    return ResponseEntity.ok().body(Objects.requireNonNull(response.getBody())[0]);
   }
 }

@@ -32,15 +32,13 @@ public class Account {
       inverseJoinColumns = @JoinColumn(name = "city_id"))
   private List<City> citiesList;
 
-
   public Account(String username, String password, String email) {
     this.username = username;
     this.password = password;
     this.email = email;
   }
 
-  public Account() {
-  }
+  public Account() {}
 
   public Long getId() {
     return id;

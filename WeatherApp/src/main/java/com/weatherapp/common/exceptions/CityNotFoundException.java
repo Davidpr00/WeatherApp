@@ -1,5 +1,3 @@
 package com.weatherapp.common.exceptions;
 
-public class CityNotFoundException extends RuntimeException{
-
-}
+public class CityNotFoundException extends RuntimeException {}

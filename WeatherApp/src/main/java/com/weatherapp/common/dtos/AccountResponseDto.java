@@ -9,8 +9,8 @@ public class AccountResponseDto {
   private String creationDate;
   private Enum<RoleEnum> role;
 
-  public AccountResponseDto(Long id, String username, String email, String creationDate,
-      Enum<RoleEnum> role) {
+  public AccountResponseDto(
+      Long id, String username, String email, String creationDate, Enum<RoleEnum> role) {
     this.id = id;
     this.username = username;
     this.email = email;

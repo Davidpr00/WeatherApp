@@ -1,6 +1,7 @@
 package com.weatherapp.common.exceptions.exceptionHandler;
 
 import com.weatherapp.common.dtos.ErrorResponseDto;
+import com.weatherapp.common.exceptions.CityNotFoundException;
 import com.weatherapp.common.exceptions.EmailIsMissingException;
 import com.weatherapp.common.exceptions.InvalidEmailException;
 import com.weatherapp.common.exceptions.InvalidLoginCredentialsException;
@@ -75,6 +76,12 @@ public class ExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponseDto handleUsernameTakenException() {
     return new ErrorResponseDto(environment.getProperty("config.errors.username_is_taken"));
+  }
+
+  @org.springframework.web.bind.annotation.ExceptionHandler(value = CityNotFoundException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorResponseDto handleCityNotFoundException() {
+    return new ErrorResponseDto(environment.getProperty("config.errors.city_not_found"));
   }
 
 }

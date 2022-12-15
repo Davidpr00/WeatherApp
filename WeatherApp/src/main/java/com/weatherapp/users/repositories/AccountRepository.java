@@ -11,4 +11,5 @@ Account findAccountByEmail(String email);
 boolean existsAccountByUsername(String username);
 Account findAccountById(long id);
 Account findAccountByVerificationToken(String verificationToken);
+Account findAccountByUsername(String username);
 }

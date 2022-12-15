@@ -17,15 +17,21 @@ import java.util.List;
     private Long id;
 
     private String cityName;
+    private double lat;
+    private double lon;
+    private String country;
 
     @ManyToMany(mappedBy = "citiesList", cascade = CascadeType.ALL)
     private List<Account> accountList;
+  public City(String cityName, double lat, double lon, String country, List<Account> accountList) {
+    this.cityName = cityName;
+    this.lat = lat;
+    this.lon = lon;
+    this.country = country;
+    this.accountList = accountList;
+  }
 
-    public City(String cityName) {
-      this.cityName = cityName;
-    }
-
-    public City() {
+  public City() {
     }
 
    public Long getId() {
@@ -50,5 +56,29 @@ import java.util.List;
 
   public void setAccountList(List<Account> accountList) {
     this.accountList = accountList;
+  }
+
+  public double getLat() {
+    return lat;
+  }
+
+  public void setLat(double lat) {
+    this.lat = lat;
+  }
+
+  public double getLon() {
+    return lon;
+  }
+
+  public void setLon(double lon) {
+    this.lon = lon;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
   }
 }

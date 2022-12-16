@@ -2,9 +2,9 @@ package com.weatherapp.users.services;
 
 import com.weatherapp.common.dtos.AccountDto;
 import com.weatherapp.common.dtos.AccountResponseDto;
-import com.weatherapp.common.dtos.CityCoordinatesDto;
+import com.weatherapp.common.dtos.json.CityCoordinatesDto;
 import com.weatherapp.common.dtos.LoginRequestDto;
-import com.weatherapp.common.dtos.OpenWeatherResponseDto;
+import com.weatherapp.common.dtos.json.OpenWeatherResponseDto;
 import com.weatherapp.common.dtos.RegisterRequestDto;
 import com.weatherapp.users.models.Account;
 import java.util.List;

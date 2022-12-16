@@ -1,7 +1,7 @@
 package com.weatherapp.users.controllers;
 
-import com.weatherapp.common.dtos.CityCoordinatesDto;
-import com.weatherapp.common.dtos.OpenWeatherResponseDto;
+import com.weatherapp.common.dtos.json.CityCoordinatesDto;
+import com.weatherapp.common.dtos.json.OpenWeatherResponseDto;
 import com.weatherapp.users.services.AccountService;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 public class CityController {
 
   private final AccountService accountService;
-  @Value("${API_KEY}")
+  @Value("${config.api_key}")
   private String apikey;
 
   public CityController(AccountService accountService) {

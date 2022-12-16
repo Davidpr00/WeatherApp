@@ -1,4 +1,4 @@
-package com.weatherapp.common.dtos;
+package com.weatherapp.common.dtos.json;
 
 public class OpenWeatherResponseDto {
   private Main main;

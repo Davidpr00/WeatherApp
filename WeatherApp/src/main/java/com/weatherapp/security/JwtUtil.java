@@ -6,13 +6,17 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.weatherapp.users.models.Account;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtUtil {
+
+  @Value("${config.security.secret}")
+  private static final String secret = "abc";
   public static final int expirationTime = 10 * 60 * 1000;
-  public final Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+  public final Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
   public final JWTVerifier verifier = JWT.require(algorithm).build();
 
   public String createAccess(Account account, String request) {

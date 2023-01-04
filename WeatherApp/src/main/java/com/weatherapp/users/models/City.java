@@ -2,6 +2,7 @@ package com.weatherapp.users.models;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +21,7 @@ public class City {
   private double lon;
   private String country;
 
-  @ManyToMany(mappedBy = "citiesList", cascade = CascadeType.ALL)
+  @ManyToMany(mappedBy = "citiesList", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<Account> accountList;
 
   public City(String cityName, double lat, double lon, String country, List<Account> accountList) {
@@ -29,6 +30,12 @@ public class City {
     this.lon = lon;
     this.country = country;
     this.accountList = accountList;
+  }
+  public City(String cityName, double lat, double lon, String country) {
+    this.cityName = cityName;
+    this.lat = lat;
+    this.lon = lon;
+    this.country = country;
   }
 
   public City() {}

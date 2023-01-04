@@ -23,6 +23,7 @@ import com.weatherapp.users.repositories.CityRepository;
 import com.weatherapp.users.services.AccountService;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class AccountServiceImplementation implements AccountService {
   private final CityRepository cityRepository;
   private final JavaMailSender javaMailSender;
   private final JwtUtil jwtUtil;
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
   @Value("${API_KEY}")
   private String apikey;
 
@@ -174,7 +176,7 @@ public class AccountServiceImplementation implements AccountService {
   public OpenWeatherResponseDto showOpenWeatherResponseDto(String token, String cityName) {
     Account account =
         accountRepository.findAccountByUsername(jwtUtil.decodeToToken(token).getName());
-    City city = returnCityFromUser(account.getCitiesList(), cityName);
+    City city = returnCityByName(account.getCitiesList(), cityName);
     if (city == null) {
       throw new CityNotFoundException();
     } else {
@@ -192,8 +194,47 @@ public class AccountServiceImplementation implements AccountService {
       return response.getBody();
     }
   }
+  public OpenWeatherResponseDto showOpenWeatherResponseDtoScheduled(String cityName) {
+    RestTemplate restTemplate = new RestTemplate();
+    City city = returnCityByName(findAllCities(),cityName);
+      ResponseEntity<OpenWeatherResponseDto> response =
+          restTemplate.getForEntity(
+              "https://api.openweathermap.org/data/2.5/weather?lat="
+                  + city.getLat()
+                  + "&lon="
+                  + city.getLon()
+                  + "&APPID="
+                  + apikey
+                  + "&units=metric",
+              OpenWeatherResponseDto.class);
+      return response.getBody();
+    }
+    @Override
+    public boolean isTemperatureUnderZero(String cityName){
+    return showOpenWeatherResponseDtoScheduled(cityName).getMain().getTemp() < 10;
+    }
 
-  public City returnCityFromUser(List<City> cities, String cityName) {
+    @Override
+    public void reportTemperatureUnderZero(String cityName){
+      City city = returnCityByName(findAllCities(), cityName);
+      List<Account> accountList = city.getAccountList();
+      String subject = "Watch out, its pretty cold in one of your cities.";
+      String body = "Temperature in " + city.getCityName() + ", " + city.getCountry() + " is currently under 0. Be careful over there.";
+
+    accountList.forEach(account -> sendNotificationEmail(subject,body,account.getEmail()));
+    }
+    @Override
+    public void sendNotificationEmail(String subject, String body, String recieverEmail){
+      javaMailSender.send(
+          mimeMessage -> {
+            MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            mimeMsgHelperObj.setTo(recieverEmail);
+            mimeMsgHelperObj.setText(body, true);
+            mimeMsgHelperObj.setSubject(subject);
+          });
+    }
+  @Override
+  public City returnCityByName(List<City> cities, String cityName) {
     for (City city : cities) {
       if (Objects.equals(city.getCityName(), cityName)) {
         return city;
@@ -261,5 +302,9 @@ public class AccountServiceImplementation implements AccountService {
         account.getEmail(),
         account.getCreatedAt(),
         account.getRole());
+  }
+  @Override
+  public List<City> findAllCities(){
+    return cityRepository.findAll();
   }
 }

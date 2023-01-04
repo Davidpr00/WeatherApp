@@ -7,6 +7,7 @@ import com.weatherapp.common.dtos.LoginRequestDto;
 import com.weatherapp.common.dtos.json.OpenWeatherResponseDto;
 import com.weatherapp.common.dtos.RegisterRequestDto;
 import com.weatherapp.users.models.Account;
+import com.weatherapp.users.models.City;
 import java.util.List;
 import javax.security.auth.login.AccountNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +39,10 @@ public interface AccountService {
   void saveCityForUser(String token, ResponseEntity<CityCoordinatesDto[]> response);
 
   OpenWeatherResponseDto showOpenWeatherResponseDto(String token, String cityName);
+  OpenWeatherResponseDto showOpenWeatherResponseDtoScheduled(String cityName);
+  List<City> findAllCities();
+  boolean isTemperatureUnderZero(String cityName);
+  void reportTemperatureUnderZero(String CityName);
+  void sendNotificationEmail(String subject, String body, String recieverEmail);
+  City returnCityByName(List<City> cities, String cityName);
 }
